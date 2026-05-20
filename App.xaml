@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <Application x:Class="SmartSecurityIoT.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
@@ -6,4 +7,14 @@
 
     </Application.Resources>
 
+=======
+<Application x:Class="SmartSecurityIoT.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Application.Resources>
+
+    </Application.Resources>
+
+>>>>>>> 1040ed1220214f4df9d7b4c004650f5c501a03e8
 </Application>

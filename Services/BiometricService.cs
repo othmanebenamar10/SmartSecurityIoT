@@ -1,3 +1,19 @@
+<<<<<<< HEAD
+using System.Threading.Tasks;
+using SmartSecurityIoT.Services.Interfaces;
+
+namespace SmartSecurityIoT.Services
+{
+    public class BiometricService : IBiometricService
+    {
+        public Task<float[]> GenerateEmbeddingAsync(byte[] image)
+            => Task.FromResult(new float[128]);
+
+        public Task<bool> DetectLivenessAsync(byte[] image)
+            => Task.FromResult(true);
+    }
+}
+=======
 
 using SmartSecurityIoT.Services.Interfaces;
 
@@ -49,3 +65,4 @@ public class BiometricService : IBiometricService
         return true;
     }
 }
+>>>>>>> 1040ed1220214f4df9d7b4c004650f5c501a03e8

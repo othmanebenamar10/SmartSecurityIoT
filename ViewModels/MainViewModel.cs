@@ -1,3 +1,25 @@
+<<<<<<< HEAD
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using System.Threading.Tasks;
+
+namespace SmartSecurityIoT.ViewModels
+{
+    public partial class MainViewModel : ObservableObject
+    {
+        [ObservableProperty]
+        private string status = "System Ready";
+
+        [RelayCommand]
+        public async Task StartSystemAsync()
+        {
+            Status = "System running...";
+            await Task.Delay(1000);
+            Status = "All systems active";
+        }
+    }
+}
+=======
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -47,3 +69,4 @@ public partial class MainViewModel : ObservableObject
         }
     }
 }
+>>>>>>> 1040ed1220214f4df9d7b4c004650f5c501a03e8
