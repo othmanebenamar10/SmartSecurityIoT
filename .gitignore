@@ -1,0 +1,45 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstats
+
+## Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Bb]uild/
+bld/
+
+## NuGet
+*.nupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+
+## Visual Studio
+.vs/
+*.rsuser
+*.sln.docstats
+[Tt]est[Rr]esult*/
+[Dd]ebugPublic/
+[Rr]eleases/
+
+## JetBrains Rider
+.idea/
+*.sln.iml
+
+## User-specific files
+*.suo
+*.user
+*.userprefs
+
+## OS
+.DS_Store
+Thumbs.db
+
+## Environment
+.env
+*.secrets

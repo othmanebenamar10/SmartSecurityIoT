@@ -1,20 +1,3 @@
-<<<<<<< HEAD
-using System.Threading.Tasks;
-using SmartSecurityIoT.Services.Interfaces;
-
-namespace SmartSecurityIoT.Services
-{
-    public class BiometricService : IBiometricService
-    {
-        public Task<float[]> GenerateEmbeddingAsync(byte[] image)
-            => Task.FromResult(new float[128]);
-
-        public Task<bool> DetectLivenessAsync(byte[] image)
-            => Task.FromResult(true);
-    }
-}
-=======
-
 using SmartSecurityIoT.Services.Interfaces;
 
 namespace SmartSecurityIoT.Services;
@@ -27,10 +10,8 @@ public class BiometricService : IBiometricService
     {
         await Task.Delay(10);
 
-        // TODO:
-        // Utiliser FaceRecognitionDotNet pour générer
+        // TODO: Utiliser FaceRecognitionDotNet pour générer
         // un embedding 128D depuis le visage détecté.
-
         return new float[128];
     }
 
@@ -56,13 +37,8 @@ public class BiometricService : IBiometricService
     {
         await Task.Delay(10);
 
-        // TODO:
-        // Implémenter :
-        // - Détection clignement yeux
-        // - Analyse micro mouvements
-        // - Vérification landmarks
-
+        // TODO: Implémenter détection clignement yeux,
+        // analyse micro mouvements, vérification landmarks.
         return true;
     }
 }
->>>>>>> 1040ed1220214f4df9d7b4c004650f5c501a03e8
