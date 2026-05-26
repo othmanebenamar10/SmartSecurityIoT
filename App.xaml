@@ -1,9 +1,11 @@
 <Application x:Class="SmartSecurityIoT.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:SmartSecurityIoT.Converters">
 
     <Application.Resources>
-
+        <converters:NullToVisibleConverter x:Key="NullToVisibleConverter"/>
+        <converters:TestModeButtonTextConverter x:Key="TestModeButtonTextConverter"/>
     </Application.Resources>
 
 </Application>

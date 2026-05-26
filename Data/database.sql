@@ -1,5 +1,5 @@
-
-PRAGMA key = 'CHANGE_THIS_SECURELY';
+-- Schema for SmartSecurityIoT database
+-- Password is provided via DB_ENCRYPTION_KEY environment variable
 
 CREATE TABLE IF NOT EXISTS Users
 (

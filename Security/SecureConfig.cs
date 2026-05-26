@@ -10,6 +10,9 @@ public static class SecureConfig
     public static string TelegramToken =>
         GetOrThrow("TELEGRAM_BOT_TOKEN");
 
+    public static string TelegramChatId =>
+        GetOrThrow("TELEGRAM_CHAT_ID");
+
     public static string PlcIp =>
         GetOrThrow("PLC_IP");
 
