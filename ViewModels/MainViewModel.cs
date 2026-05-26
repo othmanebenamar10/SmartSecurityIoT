@@ -46,7 +46,14 @@ public partial class MainViewModel : ObservableObject, IDisposable
     [ObservableProperty]
     private Brush plcStatusColor = Brushes.Red;
 
+    [ObservableProperty]
+    private string newUserName = string.Empty;
+
+    [ObservableProperty]
+    private int registeredUsersCount;
+
     public ObservableCollection<DetectionEntry> DetectionHistory { get; } = new();
+    public ObservableCollection<string> RegisteredUsers { get; } = new();
 
     public MainViewModel(
         IVideoService videoService,
@@ -62,6 +69,26 @@ public partial class MainViewModel : ObservableObject, IDisposable
         _plcService = plcService;
 
         _videoService.FrameReceived += OnFrameReceived;
+        _ = LoadRegisteredUsersAsync();
+    }
+
+    private async Task LoadRegisteredUsersAsync()
+    {
+        try
+        {
+            var users = await _databaseService.GetAllUsersAsync();
+            System.Windows.Application.Current?.Dispatcher.Invoke(() =>
+            {
+                RegisteredUsers.Clear();
+                foreach (var user in users)
+                    RegisteredUsers.Add(user.FullName);
+                RegisteredUsersCount = RegisteredUsers.Count;
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Failed to load registered users");
+        }
     }
 
     private void OnFrameReceived(byte[] frameData)
@@ -153,6 +180,87 @@ public partial class MainViewModel : ObservableObject, IDisposable
     }
 
     [RelayCommand]
+    public async Task RegisterFaceAsync()
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(NewUserName))
+            {
+                Status = "Entrez le nom de la personne avant d'enregistrer";
+                return;
+            }
+
+            Status = $"Enregistrement de {NewUserName}...";
+
+            var frame = await _videoService.CaptureFrameAsync();
+            if (frame == null)
+            {
+                Status = "Aucune image capturée — activez la webcam d'abord";
+                return;
+            }
+
+            var embedding = await _biometricService.GenerateEmbeddingAsync(frame);
+            var embeddingBlob = ConvertFloatArrayToBlob(embedding);
+
+            var user = new User
+            {
+                FullName = NewUserName.Trim(),
+                Embedding = embeddingBlob,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            var id = await _databaseService.AddUserAsync(user);
+            _logger.Information("User registered: {Name} (ID: {Id})", user.FullName, id);
+
+            System.Windows.Application.Current?.Dispatcher.Invoke(() =>
+            {
+                RegisteredUsers.Add(user.FullName);
+                RegisteredUsersCount = RegisteredUsers.Count;
+            });
+
+            AddDetection($"Enregistré: {user.FullName}", true);
+            Status = $"Visage enregistré: {user.FullName} (ID: {id})";
+            NewUserName = string.Empty;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Face registration failed");
+            Status = $"Erreur enregistrement: {ex.Message}";
+        }
+    }
+
+    [RelayCommand]
+    public async Task DeleteUserAsync(string userName)
+    {
+        try
+        {
+            var users = await _databaseService.GetAllUsersAsync();
+            var user = users.FirstOrDefault(u => u.FullName == userName);
+            if (user == null)
+            {
+                Status = $"Utilisateur '{userName}' non trouvé";
+                return;
+            }
+
+            await _databaseService.DeleteUserAsync(user.Id);
+            _logger.Information("User deleted: {Name}", userName);
+
+            System.Windows.Application.Current?.Dispatcher.Invoke(() =>
+            {
+                RegisteredUsers.Remove(userName);
+                RegisteredUsersCount = RegisteredUsers.Count;
+            });
+
+            Status = $"Utilisateur supprimé: {userName}";
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "User deletion failed");
+            Status = $"Erreur suppression: {ex.Message}";
+        }
+    }
+
+    [RelayCommand]
     public async Task RecognizeFaceAsync()
     {
         try
@@ -236,6 +344,13 @@ public partial class MainViewModel : ObservableObject, IDisposable
         var floats = new float[blob.Length / sizeof(float)];
         Buffer.BlockCopy(blob, 0, floats, 0, blob.Length);
         return floats;
+    }
+
+    private static byte[] ConvertFloatArrayToBlob(float[] floats)
+    {
+        var bytes = new byte[floats.Length * sizeof(float)];
+        Buffer.BlockCopy(floats, 0, bytes, 0, bytes.Length);
+        return bytes;
     }
 
     public void Dispose()
