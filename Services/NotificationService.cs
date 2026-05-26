@@ -8,25 +8,26 @@ namespace SmartSecurityIoT.Services;
 public class NotificationService : INotificationService
 {
     private readonly HttpClient _httpClient = new();
-    private readonly string _botToken;
     private readonly ILogger _logger = Log.ForContext<NotificationService>();
-
-    public NotificationService()
-    {
-        _botToken = Security.SecureConfig.TelegramToken;
-    }
 
     public async Task SendTelegramAlertAsync(string message, string imagePath)
     {
+        var botToken = Security.SecureConfig.TelegramToken;
+        if (string.IsNullOrEmpty(botToken))
+        {
+            _logger.Warning("Telegram bot token not configured, skipping alert");
+            return;
+        }
+
         try
         {
             if (!string.IsNullOrEmpty(imagePath) && File.Exists(imagePath))
             {
-                await SendPhotoAsync(message, imagePath);
+                await SendPhotoAsync(botToken, message, imagePath);
             }
             else
             {
-                await SendMessageAsync(message);
+                await SendMessageAsync(botToken, message);
             }
         }
         catch (Exception ex)
@@ -35,10 +36,16 @@ public class NotificationService : INotificationService
         }
     }
 
-    private async Task SendMessageAsync(string text)
+    private async Task SendMessageAsync(string botToken, string text)
     {
-        var url = $"https://api.telegram.org/bot{_botToken}/sendMessage";
+        var url = $"https://api.telegram.org/bot{botToken}/sendMessage";
         var chatId = Security.SecureConfig.TelegramChatId;
+
+        if (string.IsNullOrEmpty(chatId))
+        {
+            _logger.Warning("Telegram chat ID not configured, skipping message");
+            return;
+        }
 
         var content = new FormUrlEncodedContent(new[]
         {
@@ -60,10 +67,16 @@ public class NotificationService : INotificationService
         }
     }
 
-    private async Task SendPhotoAsync(string caption, string imagePath)
+    private async Task SendPhotoAsync(string botToken, string caption, string imagePath)
     {
-        var url = $"https://api.telegram.org/bot{_botToken}/sendPhoto";
+        var url = $"https://api.telegram.org/bot{botToken}/sendPhoto";
         var chatId = Security.SecureConfig.TelegramChatId;
+
+        if (string.IsNullOrEmpty(chatId))
+        {
+            _logger.Warning("Telegram chat ID not configured, skipping photo");
+            return;
+        }
 
         using var form = new MultipartFormDataContent();
         form.Add(new StringContent(chatId), "chat_id");

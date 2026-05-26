@@ -26,6 +26,8 @@ public partial class App : Application
             "logs",
             "app-.log");
 
+        Directory.CreateDirectory(Path.GetDirectoryName(logPath)!);
+
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Information()
             .WriteTo.File(logPath,
@@ -66,11 +68,24 @@ public partial class App : Application
             Log.Error(ex, "Failed to initialize database");
         }
 
-        var window = new MainWindow
+        try
         {
-            DataContext = Services.GetRequiredService<MainViewModel>()
-        };
-        window.Show();
+            var window = new MainWindow
+            {
+                DataContext = Services.GetRequiredService<MainViewModel>()
+            };
+            window.Show();
+        }
+        catch (Exception ex)
+        {
+            Log.Fatal(ex, "Failed to create main window");
+            MessageBox.Show(
+                $"Erreur au démarrage:\n{ex.Message}\n\nConsultez les logs pour plus de détails.",
+                "SmartSecurityIoT - Erreur",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+            Shutdown(1);
+        }
     }
 
     protected override void OnExit(ExitEventArgs e)
