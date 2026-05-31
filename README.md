@@ -1,4 +1,4 @@
-# 🏠 SmartSecurityHome IA : La Sentinelle Intelligente
+# 🏠 SmartSecurityHome IA : La Sentinelle Intelligente par Othmane BENAMAR
 
 <p align="center">
   <img src="https://img.icons8.com/fluency/120/home.png" width="120" alt="SmartSecurityHome Logo" />
