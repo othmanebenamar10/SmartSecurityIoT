@@ -43,3 +43,20 @@ Thumbs.db
 ## Environment
 .env
 *.secrets
+
+## Python
+.venv/
+__pycache__/
+*.py[cod]
+
+## Runtime data
+app_data/
+captures/
+logs/
+wheels/
+models/*.dat
+
+## Python packaging
+build/
+dist/
+*.spec
